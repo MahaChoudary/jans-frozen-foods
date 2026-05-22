@@ -22,16 +22,14 @@ interface OrderData {
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
-    res.status(405).json({ error: "Method not allowed" });
-    return;
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
     const data: OrderData = req.body;
 
     if (!data.customer || !data.items || data.items.length === 0) {
-      res.status(400).json({ error: "Invalid order data" });
-      return;
+      return res.status(400).json({ error: "Invalid order data" });
     }
 
     const orderId = `JFF-${Date.now().toString(36).toUpperCase()}`;
@@ -86,16 +84,17 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
       console.log("[ORDER]", emailBody);
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       ok: true,
       orderId,
       timestamp,
     });
   } catch (error) {
     console.error("Order error:", error);
-    res.status(500).json({
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return res.status(500).json({
       error: "Failed to process order",
-      message: error instanceof Error ? error.message : "Unknown error",
+      message,
     });
   }
 }

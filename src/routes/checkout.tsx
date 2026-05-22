@@ -61,9 +61,9 @@ function CheckoutPage() {
       });
 
       if (!response.ok) {
-        const error = await response.text();
-        console.error("API Error:", response.status, error);
-        throw new Error(`API Error: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        console.error("API Error:", response.status, errorData);
+        throw new Error(errorData.message || `API Error: ${response.status}`);
       }
 
       const res = await response.json();
