@@ -92,7 +92,7 @@ function CheckoutPage() {
               <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={`${input} sm:col-span-2`} />
               <input required placeholder="Full address" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className={`${input} sm:col-span-2`} />
               <input required placeholder="City" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className={input} />
-              <textarea placeholder="Special instructions (optional)" value={form.instructions} onChange={(e) => setForm({ ...form, instructions: e.target.value })} className={`${input} sm:col-span-2 min-h-22.5`} />
+              <textarea placeholder="Special instructions (optional)" value={form.instructions} onChange={(e) => setForm({ ...form, instructions: e.target.value })} className={`${input} sm:col-span-2 min-h-[90px]`} />
             </div>
           </div>
 
