@@ -61,7 +61,9 @@ function CheckoutPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to place order");
+        const error = await response.text();
+        console.error("API Error:", response.status, error);
+        throw new Error(`API Error: ${response.status}`);
       }
 
       const res = await response.json();
@@ -70,7 +72,7 @@ function CheckoutPage() {
       setDone({ orderId: res.orderId });
       window.scrollTo({ top: 0 });
     } catch (err) {
-      console.error(err);
+      console.error("Order submission failed:", err);
       toast.error("Could not place order. Please try again or contact us on WhatsApp.");
     } finally {
       setLoading(false);
