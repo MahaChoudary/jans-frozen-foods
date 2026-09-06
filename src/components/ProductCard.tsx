@@ -53,8 +53,9 @@ export function ProductCard({ p }: { p: Product }) {
           </button>
           <Link
             to="/products/$id"
-            params={{ id: p.id }}
+            params={{ id: String(p.id) }}
             className="inline-flex items-center justify-center rounded-full bg-card/90 backdrop-blur px-3 text-xs font-semibold border border-border"
+            preload="intent"
           >
             <Eye className="h-3.5 w-3.5" />
           </Link>

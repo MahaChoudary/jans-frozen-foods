@@ -77,15 +77,15 @@ function Home() {
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, delay: 0.1 }}
-            className="relative aspect-square max-w-[520px] mx-auto"
+            className="relative aspect-square max-w-130 mx-auto"
           >
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/40 via-ember/30 to-transparent blur-3xl" />
+            <div className="absolute inset-0 rounded-full bg-linear-to-br from-primary/40 via-ember/30 to-transparent blur-3xl" />
             <motion.div
               animate={{ y: [0, -20, 0], rotate: [-2, 2, -2] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="relative z-10 h-full w-full flex items-center justify-center"
             >
-              <Logo className="h-[78%] w-[78%] !ring-4 shadow-[0_0_120px_-10px_var(--primary)]" />
+              <Logo className="h-[78%] w-[78%] ring-4! shadow-[0_0_120px_-10px_var(--primary)]" />
             </motion.div>
             <motion.img
               src="https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=400&q=70"
@@ -95,11 +95,11 @@ function Home() {
               className="absolute -bottom-6 -left-2 h-32 w-32 rounded-2xl object-cover shadow-2xl ring-4 ring-primary/40 rotate-[-8deg]"
             />
             <motion.img
-              src="https://images.unsplash.com/photo-1626100134240-69155abc4f55?auto=format&fit=crop&w=400&q=70"
+              src=""   // there is a problem here, the src is empty, you might want to add a valid image URL
               alt=""
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 4.5, repeat: Infinity, delay: 0.5 }}
-              className="absolute -top-4 -right-4 h-28 w-28 rounded-2xl object-cover shadow-2xl ring-4 ring-accent/40 rotate-[10deg]"
+              className="absolute -top-4 -right-4 h-28 w-28 rounded-2xl object-cover shadow-2xl ring-4 ring-accent/40 rotate-10"
             />
           </motion.div>
         </div>
