@@ -7,6 +7,7 @@ import {
   useState,
   type FormEvent,
 } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/lib/supabase";
@@ -19,16 +20,15 @@ export const Route = createFileRoute("/admin/login")({
 function AdminLoginPage() {
   const navigate = useNavigate();
 
-  const {
-    user,
-    loading,
-  } = useAuth();
+  const { user, loading } = useAuth();
 
   const [email, setEmail] = useState("");
-  const [password, setPassword] =
-    useState("");
-
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] =
+    useState(false);
   const [loggingIn, setLoggingIn] =
+    useState(false);
+  const [sendingReset, setSendingReset] =
     useState(false);
 
   useEffect(() => {
@@ -70,9 +70,7 @@ function AdminLoginPage() {
         throw error;
       }
 
-      toast.success(
-        "Login successful",
-      );
+      toast.success("Login successful");
 
       navigate({
         to: "/admin",
@@ -90,6 +88,50 @@ function AdminLoginPage() {
       );
     } finally {
       setLoggingIn(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail) {
+      toast.error(
+        "Please enter your email first",
+      );
+      return;
+    }
+
+    try {
+      setSendingReset(true);
+
+      const { error } =
+        await supabase.auth.resetPasswordForEmail(
+          cleanEmail,
+          {
+            redirectTo: `${window.location.origin}/admin/reset-password`,
+          },
+        );
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success(
+        "If an account exists for this email, a reset link has been sent.",
+      );
+    } catch (error) {
+      console.error(
+        "Password reset request error:",
+        error,
+      );
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Could not send reset email",
+      );
+    } finally {
+      setSendingReset(false);
     }
   };
 
@@ -145,7 +187,7 @@ function AdminLoginPage() {
               }
               required
               autoComplete="email"
-              disabled={loggingIn}
+              disabled={loggingIn || sendingReset}
               className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 outline-none transition focus:border-primary disabled:opacity-60"
               placeholder="admin@example.com"
             />
@@ -159,24 +201,65 @@ function AdminLoginPage() {
               Password
             </label>
 
-            <input
-              id="admin-password"
-              type="password"
-              value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
-              required
-              autoComplete="current-password"
-              disabled={loggingIn}
-              className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 outline-none transition focus:border-primary disabled:opacity-60"
-              placeholder="Enter your password"
-            />
+            <div className="relative">
+              <input
+                id="admin-password"
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
+                value={password}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
+                required
+                autoComplete="current-password"
+                disabled={loggingIn || sendingReset}
+                className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 pr-12 outline-none transition focus:border-primary disabled:opacity-60"
+                placeholder="Enter your password"
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowPassword(
+                    (prev) => !prev,
+                  )
+                }
+                disabled={loggingIn || sendingReset}
+                aria-label={
+                  showPassword
+                    ? "Hide password"
+                    : "Show password"
+                }
+                className="absolute right-4 top-1/2 mt-1 -translate-y-1/2 text-muted-foreground transition hover:text-foreground disabled:opacity-50"
+              >
+                {showPassword ? (
+                  <EyeOff size={20} />
+                ) : (
+                  <Eye size={20} />
+                )}
+              </button>
+            </div>
+
+            <div className="mt-2 text-right">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={sendingReset || loggingIn}
+                className="text-sm font-medium text-primary transition hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {sendingReset
+                  ? "Sending reset link..."
+                  : "Forgot Password?"}
+              </button>
+            </div>
           </div>
 
           <button
             type="submit"
-            disabled={loggingIn}
+            disabled={loggingIn || sendingReset}
             className="w-full rounded-xl bg-primary py-3 font-bold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loggingIn
